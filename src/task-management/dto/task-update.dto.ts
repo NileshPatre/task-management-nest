@@ -3,19 +3,19 @@ import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { CommonValuesDTO } from "./common-values.dto";
 
 export class TaskUpdateDto {
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: "Id must not be empty" })
+  @IsString({ message: "Id must be string" })
   @Type(() => String)
   id: string;
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: "Title must not be empty" })
+  @IsString({ message: "Title must be string" })
   @Type(() => String)
   title: string;
   @IsOptional()
-  @IsString()
+  @IsString({ message: "Description must be string" })
   @Type(() => String)
   description?: string;
-  @IsNotEmpty()
+  @IsNotEmpty({ message: "Status is required" })
   @Type(() => CommonValuesDTO)
   status: CommonValuesDTO;
 }

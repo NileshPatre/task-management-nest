@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Header, Put, Query } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Header,
+  Post,
+  Put,
+  Query,
+} from "@nestjs/common";
 import { TaskManagementService } from "./task-management.service";
 import { TasksFilterDto } from "./dto/tasks-filters.dto";
 import { TaskDetailsQueryDto } from "./dto/task-details-query.dto";
@@ -6,6 +15,9 @@ import { TaskUpdateDto } from "./dto/task-update.dto";
 import { CommonValuesDTO } from "./dto/common-values.dto";
 import { UpdateResultDto } from "./dto/update-result.dto";
 import { TasksDataDto, TasksResponseDto } from "./dto/tasks-response.dto";
+import { TaskCreateDto } from "./dto/task.create.dto";
+import { GenericResponseDTO } from "./dto/generic-response.dto";
+import { TaskDeleteDto } from "./dto/task-delete.dto";
 
 @Controller("task-management")
 export class TaskManagementController {
@@ -32,5 +44,19 @@ export class TaskManagementController {
   @Header("content-type", "text/json")
   updateTask(@Body() taskUpdateDto: TaskUpdateDto): Promise<UpdateResultDto> {
     return this.taskManagementService.updateTask(taskUpdateDto);
+  }
+  @Post("/createTask")
+  @Header("content-type", "text/json")
+  createTask(
+    @Body() taskCreateDto: TaskCreateDto
+  ): Promise<GenericResponseDTO> {
+    return this.taskManagementService.createTask(taskCreateDto);
+  }
+  @Delete("/deleteTask")
+  @Header("content-type", "text/json")
+  deleteTask(
+    @Body() taskDeleteDto: TaskDeleteDto
+  ): Promise<GenericResponseDTO> {
+    return this.taskManagementService.deleteTask(taskDeleteDto);
   }
 }

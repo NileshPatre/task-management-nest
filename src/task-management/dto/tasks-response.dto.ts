@@ -3,7 +3,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
-  ValidateNested
+  ValidateNested,
 } from "class-validator";
 import { CommonValuesDTO } from "./common-values.dto";
 
@@ -23,13 +23,12 @@ export class TasksDataDto {
   @IsNumber()
   description: string;
   @IsString()
-  @Type(() => String)
-  createdAt: string;
+  @Type(() => Date)
+  createdAt: Date;
   @IsString()
-  @Type(() => String)
-  updatedAt: string;
+  @Type(() => Date)
+  updatedAt: Date;
   @Type(() => CommonValuesDTO)
   @ValidateNested()
   status: CommonValuesDTO;
-
 }

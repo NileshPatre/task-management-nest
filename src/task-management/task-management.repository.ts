@@ -8,6 +8,7 @@ import { TasksDataDto, TasksResponseDto } from "./dto/tasks-response.dto";
 import { parseFiltersArrayToQueryObject } from "./services/utils";
 import { TaskUpdateDto } from "./dto/task-update.dto";
 import { NotFoundException } from "@nestjs/common";
+import { TaskCreateDto } from "./dto/task.create.dto";
 
 export class StatusRepo {
   constructor(
@@ -16,6 +17,12 @@ export class StatusRepo {
   ) {}
   getAllStatus(): Promise<CommonValuesDTO[]> {
     return this.statusRepository.find();
+  }
+  async getStatus(name: string) {
+    let status = await this.statusRepository.findOne({
+      where: { name },
+    });
+    return status;
   }
 }
 export class TasksRepo {
@@ -27,7 +34,6 @@ export class TasksRepo {
     const { pageNumber, pageSize, search, filters } = tasksFilterDto;
     const queryBuilder: SelectQueryBuilder<Tasks> =
       this.tasksRepository.createQueryBuilder("tasks");
-
     // Joining Status table
     queryBuilder.leftJoinAndSelect("tasks.status", "status");
     if (search || (filters && filters.length)) {
@@ -60,7 +66,8 @@ export class TasksRepo {
         }
       });
     }
-    console.log(queryBuilder.getSql());
+    // Adding default sorting on updatedAt
+    queryBuilder.orderBy("tasks.updatedAt", "DESC");
     // Applying pagination
     const [data, total] = await queryBuilder
       .skip(pageNumber && pageSize ? (pageNumber - 1) * (pageSize || 100) : 100)
@@ -88,11 +95,29 @@ export class TasksRepo {
       existingRecord.title = title;
       existingRecord.description = description;
       existingRecord.status = status;
-      existingRecord.updatedAt = new Date().toDateString();
+      existingRecord.updatedAt = new Date();
       await this.tasksRepository.save(existingRecord);
       return true;
     } else {
       throw new NotFoundException();
     }
+  }
+  async createTask(
+    taskCreateDto: TaskCreateDto,
+    status: CommonValuesDTO
+  ): Promise<Tasks> {
+    const { title, description } = taskCreateDto;
+    const task = this.tasksRepository.create({ title, description, status });
+    return this.tasksRepository.save(task);
+  }
+  async deleteTask(id: string): Promise<boolean> {
+    const task = await this.tasksRepository.findOne({
+      where: { id },
+    });
+    if (!task) {
+      throw new NotFoundException("Task not found");
+    }
+    await this.tasksRepository.remove(task);
+    return true;
   }
 }

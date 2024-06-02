@@ -9,6 +9,9 @@ import { TaskDetailsQueryDto } from "./dto/task-details-query.dto";
 import { TasksDataDto } from "./dto/tasks-response.dto";
 import { TaskUpdateDto } from "./dto/task-update.dto";
 import { UpdateResultDto } from "./dto/update-result.dto";
+import { TaskCreateDto } from "./dto/task.create.dto";
+import { GenericResponseDTO } from "./dto/generic-response.dto";
+import { TaskDeleteDto } from "./dto/task-delete.dto";
 
 @Injectable()
 export class TaskManagementService {
@@ -54,6 +57,24 @@ export class TaskManagementService {
 
       await this.tasksRepo.updatetask(taskUpdateDto);
       return { success: true };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+  async createTask(taskCreateDto: TaskCreateDto): Promise<GenericResponseDTO> {
+    try {
+      const status = await this.statusRepo.getStatus("pending");
+      await this.tasksRepo.createTask(taskCreateDto, status);
+      return { success: true, message: "Success" };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+  async deleteTask(taskDeleteDto: TaskDeleteDto): Promise<GenericResponseDTO> {
+    try {
+      const { id } = taskDeleteDto;
+      await this.tasksRepo.deleteTask(id);
+      return { success: true, message: "Success" };
     } catch (error) {
       return { success: false, message: error.message };
     }
