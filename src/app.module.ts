@@ -3,6 +3,10 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TaskManagementModule } from "./task-management/task-management.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { configValidationSchema } from "./config/env-config.schema";
+import { AuthModule } from "./auth/auth.module";
+import { UsersModule } from "./users/users.module";
+import { APP_GUARD } from "@nestjs/core";
+import { AuthGuard } from "./auth/auth.guard";
 @Module({
   imports: [
     TaskManagementModule,
@@ -25,8 +29,15 @@ import { configValidationSchema } from "./config/env-config.schema";
         autoLoadEntities: true,
       }),
     }),
+    AuthModule,
+    UsersModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

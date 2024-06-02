@@ -1,17 +1,7 @@
-import {
-  IsArray,
-  IsInt,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Min,
-  ValidateNested
-} from "class-validator";
+import { IsArray, IsInt, IsOptional, IsString } from "class-validator";
 import { Transform, Type } from "class-transformer";
 import { escapeSpecialCharacters } from "../services/utils";
 import { FiltersDto } from "./filters.dto";
-// import { FiltersDto } from './filters.dto';
-
 export class TasksFilterDto {
   @IsOptional()
   @IsString()

@@ -9,9 +9,9 @@ export class Tasks {
   @Column()
   description: string;
   @Column({ name: "created_at" })
-  createdAt: string;
+  createdAt: Date;
   @Column({ name: "updated_at" })
-  updatedAt: string;
+  updatedAt: Date;
   @OneToOne(() => Status)
   @JoinColumn({ name: "status_id" })
   status: Status;
